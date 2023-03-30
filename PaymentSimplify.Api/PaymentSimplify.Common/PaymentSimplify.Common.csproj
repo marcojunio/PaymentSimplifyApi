@@ -7,11 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Exceptions" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\PaymentSimplify.Common\PaymentSimplify.Common.csproj" />
+      <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-preview.2.23153.2" />
     </ItemGroup>
 
 </Project>

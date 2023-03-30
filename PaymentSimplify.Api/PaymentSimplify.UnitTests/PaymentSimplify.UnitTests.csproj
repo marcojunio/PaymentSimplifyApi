@@ -22,10 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\ValueObjects" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\PaymentSimplify.Domain\PaymentSimplify.Domain.csproj" />
     </ItemGroup>
 
