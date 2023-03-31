@@ -7,14 +7,14 @@ public class Email : ValueObject
 {
     public static Result<Email> Create(string value) => IsEmail(value) ? Result<Email>.Success() : Result<Email>.Error("E-mail invalid.");
 
-    public string Value { get;}
+    public string Addreess { get;}
     
-    private Email(string value)
+    private Email(string addreess)
     {
-        Value = value;
+        Addreess = addreess;
     }
     
-    private static bool IsEmail(string s)
+    public static bool IsEmail(string s)
     {
         if (string.IsNullOrEmpty(s))
             return false;
@@ -29,6 +29,6 @@ public class Email : ValueObject
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Addreess;
     }
 }

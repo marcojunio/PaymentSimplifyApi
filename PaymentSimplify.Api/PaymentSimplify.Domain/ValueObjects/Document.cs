@@ -5,6 +5,17 @@ namespace PaymentSimplify.Domain.ValueObjects;
 
 public class Document : ValueObject
 {
+    public Document()
+    {
+        
+    }
+    
+    private Document(string value,TypeDocumentEnum typeDocument)
+    {
+        Doc = value;
+        TypeDocument = typeDocument;
+    }
+    
     public static Result<Document> Create(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -21,22 +32,16 @@ public class Document : ValueObject
         return typeDocument is null ? Result<Document>.Error("Document is invalid.") : Result<Document>.Success(new Document(value,(TypeDocumentEnum)typeDocument));
     }
 
-    public string Value { get; }
+    public string Doc { get; }
     public TypeDocumentEnum TypeDocument { get; }
 
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Doc;
         yield return TypeDocument;
     }
-
-    private Document(string value,TypeDocumentEnum typeDocument)
-    {
-        Value = value;
-        TypeDocument = typeDocument;
-    }
-
+    
     private static bool IsCpf(string cpf)
     {
         try

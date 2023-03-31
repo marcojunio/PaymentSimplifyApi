@@ -23,7 +23,7 @@ public class DocumentTests
     {
         //arrange
         var document = Document.Create("07389806095");
-        
+
         //asserts
         Assert.True(document.IsSuccess);
         Assert.True(document.Value.TypeDocument == TypeDocumentEnum.Cpf);
@@ -35,7 +35,7 @@ public class DocumentTests
     {
         //arrange
         var document =  Document.Create("09627300000170");
-
+        
         //asserts
         Assert.True(document.IsSuccess);
         Assert.True(document.Value.TypeDocument == TypeDocumentEnum.Cnpj);
