@@ -5,11 +5,6 @@ namespace PaymentSimplify.Domain.ValueObjects;
 
 public class Document : ValueObject
 {
-    public Document()
-    {
-        
-    }
-    
     private Document(string value,TypeDocumentEnum typeDocument)
     {
         Doc = value;

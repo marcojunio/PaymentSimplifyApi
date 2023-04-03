@@ -2,5 +2,5 @@
 
 public class AppSettings
 {
-    
+    public SettingsDb SettingsDb { get; set; }
 }

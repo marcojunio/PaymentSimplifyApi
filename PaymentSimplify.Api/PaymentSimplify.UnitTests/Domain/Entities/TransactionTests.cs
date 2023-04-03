@@ -15,15 +15,15 @@ public class TransactionTests
         var transaction = Setup("21980467099", "92182247009",100);
     
         //action
-        transaction.CreateTransaction();
+        transaction.CreateTransactionTransfer();
         
         //assert balance
-        Assert.True(transaction.Payee.AccountBank.Balance.Amount == 600);
-        Assert.True(transaction.Payer.AccountBank.Balance.Amount == 150);
+        Assert.Equal(600,transaction.Payee.AccountBank.Balance.Amount);
+        Assert.Equal(150,transaction.Payer.AccountBank.Balance.Amount);
         
         //assert length transaction register
-        Assert.True(transaction.Payer.Transactions.Count == 1);
-        Assert.True(transaction.Payee.Transactions.Count == 1);
+        Assert.Equal(1,transaction.Payer.AccountBank.Transactions.Count);
+        Assert.Equal(1,transaction.Payee.AccountBank.Transactions.Count);
     }
     
     [Fact]
@@ -35,16 +35,16 @@ public class TransactionTests
         //assert exception
        Assert.Throws<TransactionBalanceInsufficientException>(() =>
        {
-           transaction.CreateTransaction();
+           transaction.CreateTransactionTransfer();
        });
        
        //assert balance
-       Assert.True(transaction.Payee.AccountBank.Balance.Amount == 500);
-       Assert.True(transaction.Payer.AccountBank.Balance.Amount == 250);
+       Assert.Equal(500,transaction.Payee.AccountBank.Balance.Amount);
+       Assert.Equal(250,transaction.Payer.AccountBank.Balance.Amount);
        
        //assert length transaction register
-       Assert.True(transaction.Payer.Transactions.Count == 0);
-       Assert.True(transaction.Payee.Transactions.Count == 0);
+       Assert.Equal(0,transaction.Payer.AccountBank.Transactions.Count);
+       Assert.Equal(0,transaction.Payee.AccountBank.Transactions.Count);
     }
     
     [Fact]
@@ -56,26 +56,26 @@ public class TransactionTests
         //assert exception
         Assert.Throws<TransactionPayerInvalidTypeException>(() =>
         {
-            transaction.CreateTransaction();
+            transaction.CreateTransactionTransfer();
         });
         
         //assert balance
-        Assert.True(transaction.Payee.AccountBank.Balance.Amount == 500);
-        Assert.True(transaction.Payer.AccountBank.Balance.Amount == 250);
+        Assert.Equal(500,transaction.Payee.AccountBank.Balance.Amount);
+        Assert.Equal(250,transaction.Payer.AccountBank.Balance.Amount);
         
         //assert length transaction register
-        Assert.True(transaction.Payer.Transactions.Count == 0);
-        Assert.True(transaction.Payee.Transactions.Count == 0);
+        Assert.Equal(0,transaction.Payer.AccountBank.Transactions.Count);
+        Assert.Equal(0,transaction.Payee.AccountBank.Transactions.Count);
     }
     
     private Transaction Setup(string documentPayee,string documentPayeer,decimal amountTransfer)
     {
-        var payee = new Customer("Payee", "last", Document.Create(documentPayee).Value);
-        var payer = new Customer("Payer", "last", Document.Create(documentPayeer).Value);
+        var payee = new Customer("Payee", "last", Document.Create(documentPayee).Value,new AccountBank(new Money("C",50)));
+        var payer = new Customer("Payer", "last", Document.Create(documentPayeer).Value,new AccountBank(new Money("C",50)));
 
         payee.AccountBank = new AccountBank(new Money("C", 500));
         payer.AccountBank = new AccountBank( new Money("C", 250));
 
-        return new Transaction(new Money("C", amountTransfer), payer, payee);
+        return new Transaction(new Money("C", amountTransfer), payer, payee,payer.AccountBank);
     }
 }

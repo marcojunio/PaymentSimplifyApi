@@ -5,7 +5,7 @@ namespace PaymentSimplify.Domain.ValueObjects;
 
 public class Email : ValueObject
 {
-    public static Result<Email> Create(string value) => IsEmail(value) ? Result<Email>.Success() : Result<Email>.Error("E-mail invalid.");
+    public static Result<Email> Create(string value) => IsEmail(value) ? Result<Email>.Success(new Email(value)) : Result<Email>.Error("E-mail invalid.");
 
     public string Addreess { get;}
     
