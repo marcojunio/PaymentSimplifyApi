@@ -19,6 +19,7 @@ public class AuthConfiguration : EntityTypeConfigurationBase<Auth>
         builder.OwnsOne(f => f.Email, action =>
         {
             action.Property(f => f.Addreess).HasColumnName("EMAIL").HasMaxLength(80).IsRequired();
+            action.HasIndex(f => f.Addreess).IsUnique();
         });
 
         builder
@@ -28,6 +29,5 @@ public class AuthConfiguration : EntityTypeConfigurationBase<Auth>
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasIndex("EMAIL").IsUnique();
     }
 }

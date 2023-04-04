@@ -12,10 +12,15 @@ public class Transaction : BaseAuditableEntity
         AccountBank = accountBank;
     }
 
-    private Money Amount { get; }
-    public virtual Customer Payer { get; }
-    public virtual Customer Payee { get; }
-    public virtual AccountBank AccountBank { get; }
+    private Transaction()
+    {
+        
+    }
+
+    private Money Amount { get; } = null!;
+    public Customer Payer { get; } = null!;
+    public virtual Customer Payee { get; } = null!;
+    public virtual AccountBank AccountBank { get; } = null!;
 
     public void CreateTransactionTransfer()
     {

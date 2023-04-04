@@ -14,6 +14,6 @@ public class TransactionConfiguration : EntityTypeConfigurationBase<Transaction>
         base.Configure(builder);
 
         builder.HasOne(f => f.Payee).WithMany().HasForeignKey("ID_COSTUMER_PAYEE");
-        builder.HasOne(f => f.AccountBank).WithMany().HasForeignKey("ID_ACCOUNT_BANK");
+        builder.HasOne(f => f.AccountBank).WithMany(f => f.Transactions).HasForeignKey("ID_ACCOUNT_BANK");
     }
 }

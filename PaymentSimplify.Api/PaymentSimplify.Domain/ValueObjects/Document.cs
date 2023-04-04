@@ -10,6 +10,11 @@ public class Document : ValueObject
         Doc = value;
         TypeDocument = typeDocument;
     }
+
+    private Document()
+    {
+        
+    }
     
     public static Result<Document> Create(string value)
     {
@@ -27,7 +32,7 @@ public class Document : ValueObject
         return typeDocument is null ? Result<Document>.Error("Document is invalid.") : Result<Document>.Success(new Document(value,(TypeDocumentEnum)typeDocument));
     }
 
-    public string Doc { get; }
+    public string Doc { get; } = null!;
     public TypeDocumentEnum TypeDocument { get; }
 
 

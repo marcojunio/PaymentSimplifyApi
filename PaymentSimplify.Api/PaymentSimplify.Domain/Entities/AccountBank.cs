@@ -7,17 +7,21 @@ public class AccountBank : BaseAuditableEntity
         Balance = balance;
         _transactions = new List<Transaction>();
     }
+
+    private AccountBank()
+    {
+        
+    }
     
-    public Money Balance { get; }
+    public Money Balance { get; } = null!;
     public IReadOnlyCollection<Transaction> Transactions => _transactions;
+    
+    private List<Transaction> _transactions = null!;
     public bool BalanceSuficient(Money money) => Balance.Amount >= money.Amount;
 
     public void AddCredit(Money money) => Balance.IncrementAmount(money.Amount);
 
     public void WithdrawMoney(Money money) => Balance.DecrementAmount(money.Amount);
     public void AddTransaction(Transaction transaction) => _transactions.Add(transaction);
-
-
-    private List<Transaction> _transactions;
 
 }

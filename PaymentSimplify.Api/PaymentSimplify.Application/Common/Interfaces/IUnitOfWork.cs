@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace PaymentSimplify.Application.Interfaces;
+namespace PaymentSimplify.Application.Common.Interfaces;
 
 public interface IUnitOfWork
 {

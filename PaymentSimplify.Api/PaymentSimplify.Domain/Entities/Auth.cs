@@ -9,9 +9,14 @@ public class Auth : BaseAuditableEntity
         Customer = customer;
     }
 
-    public virtual Customer Customer { get; }
-    public Email Email { get; private set; }
-    public string Password { get; private set; }
+    private Auth()
+    {
+        
+    }
+    
+    public virtual Customer Customer { get; } = null!;
+    public Email Email { get; private set; } = null!;
+    public string Password { get; private set; } = null!;
 
     public void ChangePassword(string newPassword)
     {

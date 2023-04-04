@@ -5,7 +5,8 @@ public sealed class Customer : BaseAuditableEntity
     public Customer(
         string firsname,
         string lastName,
-        Document document, AccountBank accountBank)
+        Document document, 
+        AccountBank accountBank)
     {
         FistName = firsname;
         LastName = lastName;
@@ -13,9 +14,12 @@ public sealed class Customer : BaseAuditableEntity
         AccountBank = accountBank;
     }
 
-    public AccountBank AccountBank { get; set; }
-    public Document Document { get; }
-    public string FistName { get; }
-    public string LastName { get; }
+    private Customer()
+    {
+    }
 
+    public AccountBank AccountBank { get; set; } = null!;
+    public Document Document { get; } = null!;
+    public string FistName { get; } = null!;
+    public string LastName { get; } = null!;
 }
