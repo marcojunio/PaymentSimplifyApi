@@ -1,12 +1,9 @@
-﻿namespace PaymentSimplify.Domain.Exceptions;
+﻿using PaymentSimplify.Common.Exceptions;
 
-public class TransactionPayerInvalidTypeException : Exception
+namespace PaymentSimplify.Domain.Exceptions;
+
+public class TransactionPayerInvalidTypeException : CoreException
 {
-    public TransactionPayerInvalidTypeException()
-    {
-        
-    }
-
     public TransactionPayerInvalidTypeException(string message) : base(message)
     {
         

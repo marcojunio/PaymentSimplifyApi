@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using PaymentSimplify.Application.Common.Interfaces;
+﻿using PaymentSimplify.Application.Common.Interfaces;
 
-namespace PaymentSimplify.Infra.Services;
+namespace PaymentSimplify.Api.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

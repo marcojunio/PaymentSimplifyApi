@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using PaymentSimplify.Application.Common.Interfaces;
 using PaymentSimplify.Domain.Entities;
 
 namespace PaymentSimplify.Infra.Persistence;
 
-public class PaymentSimplifyContext : DbContext
+public class PaymentSimplifyContext : DbContext , IPaymentSimplifyContext
 {
     public PaymentSimplifyContext(DbContextOptions<PaymentSimplifyContext> options) : base(options)
     {

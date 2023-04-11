@@ -10,13 +10,13 @@ public class AccountBank : BaseAuditableEntity
 
     private AccountBank()
     {
-        
+        _transactions = new List<Transaction>();
     }
     
     public Money Balance { get; } = null!;
     public IReadOnlyCollection<Transaction> Transactions => _transactions;
     
-    private List<Transaction> _transactions = null!;
+    private List<Transaction> _transactions;
     public bool BalanceSuficient(Money money) => Balance.Amount >= money.Amount;
 
     public void AddCredit(Money money) => Balance.IncrementAmount(money.Amount);

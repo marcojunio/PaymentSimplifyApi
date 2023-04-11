@@ -1,3 +1,10 @@
+using System.Text;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
+using PaymentSimplify.Api;
+using PaymentSimplify.Application;
 using PaymentSimplify.Common.Settings;
 using PaymentSimplify.Infra;
 
@@ -12,26 +19,82 @@ var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 //base
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthorization()
+    .AddAuthentication(o =>
+    {
+        o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(f =>
+{
+    f.SaveToken = true;
+    f.RequireHttpsMetadata = false;
+    f.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidAudience = appSettings.AuthenticatedSettings.ValidAudience,
+        ValidIssuer = appSettings.AuthenticatedSettings.ValidIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.AuthenticatedSettings.Key)),
+    };
+});
+
+builder.Services.AddResponseCompression();
+
+builder.Services.AddMvc();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(f =>
+    {
+        f.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        f.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+builder.Services.AddSwaggerGen();
 
 //add settings
 builder.Services.AddSingleton(appSettings);
 
-//http context
-
 //infra
 builder.Services.AddInfrastructureServices(appSettings);
 
+//application
+builder.Services.AddConfigurationsApplication();
+
+//api
+builder.Services.AddConfigurationApi();
+
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseAuthentication();
-app.UseAuthorization();
 app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
-app.MapGet("/", () => "Hello World!");
+app.UseRequestLocalization(options => options
+    .AddSupportedCultures("pt", "en")
+    .AddSupportedUICultures("pt", "en")
+    .SetDefaultCulture(new []{"pt", "en"}.First()));
 
+app.UseResponseCompression();
 
+app.MapControllers();
 
 app.Run();
+

@@ -2,11 +2,12 @@
 
 public class Auth : BaseAuditableEntity
 {
-    public Auth(Email email, string password, Customer customer)
+    public Auth(Email email, string password,string salt, Customer customer)
     {
         Email = email;
         Password = password;
         Customer = customer;
+        Salt = salt;
     }
 
     private Auth()
@@ -17,6 +18,7 @@ public class Auth : BaseAuditableEntity
     public virtual Customer Customer { get; } = null!;
     public Email Email { get; private set; } = null!;
     public string Password { get; private set; } = null!;
+    public string Salt { get; private set; } = null!;
 
     public void ChangePassword(string newPassword)
     {

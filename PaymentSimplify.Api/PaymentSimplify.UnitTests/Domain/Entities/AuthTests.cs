@@ -61,7 +61,7 @@ public class AuthTests
 
     private Auth Setup()
     {
-        return new Auth(Email.Create("teste@gmail.com").Value, "123",
+        return new Auth(Email.Create("teste@gmail.com").Value, "123",Guid.NewGuid().ToString(),
             new Customer("first name", "last name", Document.Create("21980467099").Value,new AccountBank(new Money("C",50))));
     }
 }

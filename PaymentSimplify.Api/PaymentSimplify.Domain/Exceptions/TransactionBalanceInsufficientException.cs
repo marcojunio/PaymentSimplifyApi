@@ -1,13 +1,10 @@
-﻿namespace PaymentSimplify.Domain.Exceptions;
+﻿using PaymentSimplify.Common.Exceptions;
 
-public class TransactionBalanceInsufficientException : Exception
+namespace PaymentSimplify.Domain.Exceptions;
+
+public class TransactionBalanceInsufficientException : CoreException
 {
     public TransactionBalanceInsufficientException(string message) : base(message)
-    {
-        
-    }
-
-    public TransactionBalanceInsufficientException()
     {
         
     }

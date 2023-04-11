@@ -5,7 +5,7 @@ namespace PaymentSimplify.Infra.File;
 
 public class CsvBuilderFile : ICsvBuilderFile
 {
-    public byte[] GenerateCsv(IEnumerable<object> data,Encoding encoding)
+    public byte[] GenerateCsv<T>(IEnumerable<T> data, Encoding encoding) where T : ICsvExport
     {
         var typeList = data.Select(f => f.GetType()).FirstOrDefault();
 
@@ -14,24 +14,26 @@ public class CsvBuilderFile : ICsvBuilderFile
 
         var builderString = new StringBuilder();
 
-        builderString.Append(WriteCsv(typeList,true));
+        builderString.Append(WriteCsv(typeList, true));
         builderString.Append(WriteCsv(typeList));
 
-        return encoding.GetBytes(builderString.ToString());;
+        return encoding.GetBytes(builderString.ToString());
     }
 
-    private string WriteCsv(Type props,bool writeHeader = false)
+    private string WriteCsv(Type props, bool writeHeader = false)
     {
         var agregated = string.Empty;
         var separator = string.Empty;
-        
+
         foreach (var prop in props.GetProperties())
         {
+            if (!prop.PropertyType.IsPrimitive)
+                continue;
+
             agregated += separator + (writeHeader ? prop.Name : prop.GetValue(prop));
             separator = ";";
         }
 
         return agregated;
     }
-    
 }

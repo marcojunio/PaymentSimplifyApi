@@ -7,7 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Common" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
+      <PackageReference Include="MediatR" Version="12.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-preview.2.23128.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PaymentSimplify.Common\PaymentSimplify.Common.csproj" />
+      <ProjectReference Include="..\PaymentSimplify.Domain\PaymentSimplify.Domain.csproj" />
     </ItemGroup>
 
 </Project>

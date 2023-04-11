@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaymentSimplify.Infra.Persistence;
 
@@ -10,9 +11,11 @@ using PaymentSimplify.Infra.Persistence;
 namespace PaymentSimplify.Infra.Migrations
 {
     [DbContext(typeof(PaymentSimplifyContext))]
-    partial class PaymentSimplifyContextModelSnapshot : ModelSnapshot
+    [Migration("20230408015853_Migration01")]
+    partial class Migration01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

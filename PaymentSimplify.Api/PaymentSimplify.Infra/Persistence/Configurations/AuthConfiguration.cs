@@ -14,7 +14,7 @@ public class AuthConfiguration : EntityTypeConfigurationBase<Auth>
         base.Configure(builder);
 
         builder.Property(f => f.Password).HasColumnName("PASSWORD").IsRequired();
-
+        builder.Property(f => f.Salt).HasColumnName("SALT");
         
         builder.OwnsOne(f => f.Email, action =>
         {

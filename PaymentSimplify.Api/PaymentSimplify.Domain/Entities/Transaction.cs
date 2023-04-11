@@ -11,6 +11,13 @@ public class Transaction : BaseAuditableEntity
         Payee = payee;
         AccountBank = accountBank;
     }
+    
+    public Transaction(Money amount, Customer payer, Customer payee)
+    {
+        Amount = amount;
+        Payer = payer;
+        Payee = payee;
+    }
 
     private Transaction()
     {
@@ -24,20 +31,20 @@ public class Transaction : BaseAuditableEntity
 
     public void CreateTransactionTransfer()
     {
-        if (!AccountBank.BalanceSuficient(Amount))
+        if (!Payer.AccountBank.BalanceSuficient(Amount))
             throw new TransactionBalanceInsufficientException("Insufficient balance to complete a transaction.");
 
         if (Payer.Document.TypeDocument == TypeDocumentEnum.Cnpj)
             throw new TransactionPayerInvalidTypeException("It is not possible for a shopkeeper to be a payer.");
 
         //remove credit for Payer
-        AccountBank.WithdrawMoney(Amount);
+        Payer.AccountBank.WithdrawMoney(Amount);
 
         //Increment credit for Payee
         Payee.AccountBank.AddCredit(Amount);
 
         //register transaction;
-        AccountBank.AddTransaction(this);
+        Payer.AccountBank.AddTransaction(this);
         Payee.AccountBank.AddTransaction(this);
     }
 }
