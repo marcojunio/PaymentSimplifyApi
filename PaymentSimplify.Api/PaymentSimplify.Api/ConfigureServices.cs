@@ -14,6 +14,7 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<ICentralBankService, CentralBankService>();
 
         services.AddScoped<FluentValidationSchemaProcessor>(provider =>
         {

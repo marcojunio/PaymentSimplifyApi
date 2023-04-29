@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace PaymentSimplify.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class Migration01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,8 +21,7 @@ namespace PaymentSimplify.Infra.Migrations
                     ID = table.Column<Guid>(type: "char(36)", nullable: false),
                     CURRENCY = table.Column<string>(type: "longtext", nullable: false),
                     AMOUNT = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CREATED_BY = table.Column<string>(type: "longtext", nullable: true),
                     LAST_MODIFIED = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     LAST_MODIFIED_BE = table.Column<string>(type: "longtext", nullable: true)
@@ -44,8 +42,7 @@ namespace PaymentSimplify.Infra.Migrations
                     TYPE_DOCUMENT = table.Column<int>(type: "int", nullable: false),
                     FIRST_NAME = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false),
                     LAST_NAME = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false),
-                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CREATED_BY = table.Column<string>(type: "longtext", nullable: true),
                     LAST_MODIFIED = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     LAST_MODIFIED_BE = table.Column<string>(type: "longtext", nullable: true)
@@ -62,6 +59,38 @@ namespace PaymentSimplify.Infra.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "TRANSACTIONS",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "char(36)", nullable: false),
+                    CURRENCY = table.Column<string>(type: "longtext", nullable: false),
+                    AMOUNT = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ID_ACCOUNT_BANK_PAYEE = table.Column<Guid>(type: "char(36)", nullable: false),
+                    ID_ACCOUNT_BANK_PAYER = table.Column<Guid>(type: "char(36)", nullable: false),
+                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "longtext", nullable: true),
+                    LAST_MODIFIED = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LAST_MODIFIED_BE = table.Column<string>(type: "longtext", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TRANSACTIONS", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_TRANSACTIONS_ACCOUNT_BANK_ID_ACCOUNT_BANK_PAYEE",
+                        column: x => x.ID_ACCOUNT_BANK_PAYEE,
+                        principalTable: "ACCOUNT_BANK",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TRANSACTIONS_ACCOUNT_BANK_ID_ACCOUNT_BANK_PAYER",
+                        column: x => x.ID_ACCOUNT_BANK_PAYER,
+                        principalTable: "ACCOUNT_BANK",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "AUTH",
                 columns: table => new
                 {
@@ -69,8 +98,8 @@ namespace PaymentSimplify.Infra.Migrations
                     COSTUMER_ID = table.Column<Guid>(type: "char(36)", nullable: false),
                     EMAIL = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false),
                     PASSWORD = table.Column<string>(type: "longtext", nullable: false),
-                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    SALT = table.Column<string>(type: "longtext", nullable: false),
+                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CREATED_BY = table.Column<string>(type: "longtext", nullable: true),
                     LAST_MODIFIED = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     LAST_MODIFIED_BE = table.Column<string>(type: "longtext", nullable: true)
@@ -83,37 +112,6 @@ namespace PaymentSimplify.Infra.Migrations
                         column: x => x.COSTUMER_ID,
                         principalTable: "CUSTOMER",
                         principalColumn: "ID");
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "TRANSACTIONS",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "char(36)", nullable: false),
-                    ID_COSTUMER_PAYEE = table.Column<Guid>(type: "char(36)", nullable: false),
-                    ID_ACCOUNT_BANK = table.Column<Guid>(type: "char(36)", nullable: false),
-                    CREATED = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    CREATED_BY = table.Column<string>(type: "longtext", nullable: true),
-                    LAST_MODIFIED = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LAST_MODIFIED_BE = table.Column<string>(type: "longtext", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TRANSACTIONS", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_TRANSACTIONS_ACCOUNT_BANK_ID_ACCOUNT_BANK",
-                        column: x => x.ID_ACCOUNT_BANK,
-                        principalTable: "ACCOUNT_BANK",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TRANSACTIONS_CUSTOMER_ID_COSTUMER_PAYEE",
-                        column: x => x.ID_COSTUMER_PAYEE,
-                        principalTable: "CUSTOMER",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -141,14 +139,14 @@ namespace PaymentSimplify.Infra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TRANSACTIONS_ID_ACCOUNT_BANK",
+                name: "IX_TRANSACTIONS_ID_ACCOUNT_BANK_PAYEE",
                 table: "TRANSACTIONS",
-                column: "ID_ACCOUNT_BANK");
+                column: "ID_ACCOUNT_BANK_PAYEE");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TRANSACTIONS_ID_COSTUMER_PAYEE",
+                name: "IX_TRANSACTIONS_ID_ACCOUNT_BANK_PAYER",
                 table: "TRANSACTIONS",
-                column: "ID_COSTUMER_PAYEE");
+                column: "ID_ACCOUNT_BANK_PAYER");
         }
 
         /// <inheritdoc />

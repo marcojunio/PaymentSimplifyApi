@@ -10,8 +10,8 @@ public class EntityTypeConfigurationBase<T> : IEntityTypeConfiguration<T> where 
     {
         builder.HasKey(f => f.Id);
         builder.Property(f => f.Id).HasColumnName("ID").ValueGeneratedOnAdd().IsRequired();
-        builder.Property(f => f.Created).ValueGeneratedOnAdd().HasColumnName("CREATED");
-        builder.Property(f => f.LastModified).ValueGeneratedOnUpdate().HasColumnName("LAST_MODIFIED");
+        builder.Property(f => f.Created).HasColumnName("CREATED");
+        builder.Property(f => f.LastModified).HasColumnName("LAST_MODIFIED");
         builder.Property(f => f.CreatedBy).HasColumnName("CREATED_BY");
         builder.Property(f => f.LastModifiedBy).HasColumnName("LAST_MODIFIED_BE");
     }

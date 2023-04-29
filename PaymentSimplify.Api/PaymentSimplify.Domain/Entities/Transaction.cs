@@ -4,19 +4,16 @@ namespace PaymentSimplify.Domain.Entities;
 
 public class Transaction : BaseAuditableEntity
 {
-    public Transaction(Money amount, Customer payer, Customer payee, AccountBank accountBank)
+    public Transaction(Money amount, AccountBank accountBankPayee,AccountBank accountBankPayer)
     {
         Amount = amount;
-        Payer = payer;
-        Payee = payee;
-        AccountBank = accountBank;
+        AccountBankPayee = accountBankPayee;
+        AccountBankPayer = accountBankPayer;
     }
     
-    public Transaction(Money amount, Customer payer, Customer payee)
+    public Transaction(Money amount)
     {
         Amount = amount;
-        Payer = payer;
-        Payee = payee;
     }
 
     private Transaction()
@@ -24,27 +21,26 @@ public class Transaction : BaseAuditableEntity
         
     }
 
-    private Money Amount { get; } = null!;
-    public Customer Payer { get; } = null!;
-    public virtual Customer Payee { get; } = null!;
-    public virtual AccountBank AccountBank { get; } = null!;
+    public Money Amount { get; } = null!;
+    public virtual AccountBank AccountBankPayee { get; } = null!;
+    public virtual AccountBank AccountBankPayer { get; } = null!;
 
-    public void CreateTransactionTransfer()
+    public void CreateTransactionTransfer(Customer payer)
     {
-        if (!Payer.AccountBank.BalanceSuficient(Amount))
+        if (!AccountBankPayer.BalanceSuficient(Amount))
             throw new TransactionBalanceInsufficientException("Insufficient balance to complete a transaction.");
 
-        if (Payer.Document.TypeDocument == TypeDocumentEnum.Cnpj)
+        if (payer.Document.TypeDocument == TypeDocumentEnum.Cnpj)
             throw new TransactionPayerInvalidTypeException("It is not possible for a shopkeeper to be a payer.");
 
         //remove credit for Payer
-        Payer.AccountBank.WithdrawMoney(Amount);
+        AccountBankPayer.WithdrawMoney(Amount);
 
         //Increment credit for Payee
-        Payee.AccountBank.AddCredit(Amount);
+        AccountBankPayee.AddCredit(Amount);
 
         //register transaction;
-        Payer.AccountBank.AddTransaction(this);
-        Payee.AccountBank.AddTransaction(this);
+        AccountBankPayer.AddTransactionPayer(this);
+        AccountBankPayee.AddTransactionPayee(this);
     }
 }

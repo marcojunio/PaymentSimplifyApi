@@ -13,7 +13,18 @@ public class TransactionConfiguration : EntityTypeConfigurationBase<Transaction>
         
         base.Configure(builder);
 
-        builder.HasOne(f => f.Payee).WithMany().HasForeignKey("ID_COSTUMER_PAYEE");
-        builder.HasOne(f => f.AccountBank).WithMany(f => f.Transactions).HasForeignKey("ID_ACCOUNT_BANK");
+        builder.OwnsOne(f => f.Amount, action =>
+        {
+            action.Property(f => f.Amount).HasColumnName("AMOUNT").IsRequired();
+            action.Property(f => f.Currency).HasColumnName("CURRENCY").IsRequired();
+        });
+        
+        builder.HasOne(f => f.AccountBankPayee)
+            .WithMany(f => f.TransactionsPayee)
+            .HasForeignKey("ID_ACCOUNT_BANK_PAYEE");
+        
+        builder.HasOne(f => f.AccountBankPayer)
+            .WithMany(f => f.TransactionsPayer)
+            .HasForeignKey("ID_ACCOUNT_BANK_PAYER");
     }
 }

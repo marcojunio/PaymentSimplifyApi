@@ -32,8 +32,6 @@ public class AuthenticatedAuthCommandHandler : IRequestHandler<AuthenticatedAuth
 
     public async Task<Result> Handle(AuthenticatedAuthCommand request, CancellationToken cancellationToken)
     {
-        var user = _currentUserService.GetIdUser();
-
         var resultError = Result.Error("E-mail or password incorrect.");
 
         if (!await _authRepository.EmailAlreadyExists(request.Login))
@@ -53,7 +51,7 @@ public class AuthenticatedAuthCommandHandler : IRequestHandler<AuthenticatedAuth
         {
             Token = _jwtService.Encode(new List<Claim>()
             {
-                new("user_id", auth.Id)
+                new("user_id", auth.IdCustumer)
             })
         });
     }

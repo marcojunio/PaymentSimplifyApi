@@ -8,6 +8,7 @@ public record Result(ResultType Type, string Message)
     public static Result Error() => new (ResultType.Error, default);
     public static Result Error(string message) => new (ResultType.Error, message);
     public static Result Success() => new (ResultType.Success,default);
+    public static Result Success(string message) => new (ResultType.Success,message);
     public Result<T> Convert<T>() => new(Type, Message, default);
 }
 

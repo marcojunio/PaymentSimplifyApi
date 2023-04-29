@@ -54,6 +54,7 @@ public class AuthRepository : IAuthRepository
             .Select(s => new AuthDto()
             {
                 Id = s.Id.ToString(),
+                IdCustumer = s.Customer.Id.ToString(),
                 Email = s.Email.Addreess,
                 Password = s.Password,
                 Salt = s.Salt

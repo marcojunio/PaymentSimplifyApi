@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using PaymentSimplify.Api;
 using PaymentSimplify.Application;
@@ -37,7 +36,8 @@ builder.Services.AddAuthorization()
         ValidateLifetime = true,
         ValidAudience = appSettings.AuthenticatedSettings.ValidAudience,
         ValidIssuer = appSettings.AuthenticatedSettings.ValidIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.AuthenticatedSettings.Key)),
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(appSettings.AuthenticatedSettings.Key)),
     };
 });
 
@@ -65,6 +65,9 @@ builder.Services.AddConfigurationsApplication();
 //api
 builder.Services.AddConfigurationApi();
 
+//Http client factory
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -79,8 +82,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseAuthentication();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
@@ -97,4 +100,3 @@ app.UseResponseCompression();
 app.MapControllers();
 
 app.Run();
-

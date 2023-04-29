@@ -11,8 +11,8 @@ using PaymentSimplify.Infra.Persistence;
 namespace PaymentSimplify.Infra.Migrations
 {
     [DbContext(typeof(PaymentSimplifyContext))]
-    [Migration("20230404173749_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20230428142851_Migration01")]
+    partial class Migration01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +30,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("CREATED");
 
@@ -39,7 +38,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnName("CREATED_BY");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LAST_MODIFIED");
 
@@ -63,7 +61,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("CREATED");
 
@@ -72,7 +69,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnName("CREATED_BY");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LAST_MODIFIED");
 
@@ -84,6 +80,11 @@ namespace PaymentSimplify.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("PASSWORD");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("SALT");
 
                     b.HasKey("Id");
 
@@ -104,7 +105,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("CREATED");
 
@@ -119,7 +119,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnName("FIRST_NAME");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LAST_MODIFIED");
 
@@ -148,7 +147,6 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("CREATED");
 
@@ -156,14 +154,13 @@ namespace PaymentSimplify.Infra.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("CREATED_BY");
 
-                    b.Property<Guid>("ID_ACCOUNT_BANK")
+                    b.Property<Guid>("ID_ACCOUNT_BANK_PAYEE")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ID_COSTUMER_PAYEE")
+                    b.Property<Guid>("ID_ACCOUNT_BANK_PAYER")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LAST_MODIFIED");
 
@@ -173,9 +170,9 @@ namespace PaymentSimplify.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ID_ACCOUNT_BANK");
+                    b.HasIndex("ID_ACCOUNT_BANK_PAYEE");
 
-                    b.HasIndex("ID_COSTUMER_PAYEE");
+                    b.HasIndex("ID_ACCOUNT_BANK_PAYER");
 
                     b.ToTable("TRANSACTIONS", (string)null);
                 });
@@ -286,26 +283,53 @@ namespace PaymentSimplify.Infra.Migrations
 
             modelBuilder.Entity("PaymentSimplify.Domain.Entities.Transaction", b =>
                 {
-                    b.HasOne("PaymentSimplify.Domain.Entities.AccountBank", "AccountBank")
-                        .WithMany("Transactions")
-                        .HasForeignKey("ID_ACCOUNT_BANK")
+                    b.HasOne("PaymentSimplify.Domain.Entities.AccountBank", "AccountBankPayee")
+                        .WithMany("TransactionsPayee")
+                        .HasForeignKey("ID_ACCOUNT_BANK_PAYEE")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PaymentSimplify.Domain.Entities.Customer", "Payee")
-                        .WithMany()
-                        .HasForeignKey("ID_COSTUMER_PAYEE")
+                    b.HasOne("PaymentSimplify.Domain.Entities.AccountBank", "AccountBankPayer")
+                        .WithMany("TransactionsPayer")
+                        .HasForeignKey("ID_ACCOUNT_BANK_PAYER")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccountBank");
+                    b.OwnsOne("PaymentSimplify.Domain.ValueObjects.Money", "Amount", b1 =>
+                        {
+                            b1.Property<Guid>("TransactionId")
+                                .HasColumnType("char(36)");
 
-                    b.Navigation("Payee");
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("AMOUNT");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("CURRENCY");
+
+                            b1.HasKey("TransactionId");
+
+                            b1.ToTable("TRANSACTIONS");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransactionId");
+                        });
+
+                    b.Navigation("AccountBankPayee");
+
+                    b.Navigation("AccountBankPayer");
+
+                    b.Navigation("Amount")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PaymentSimplify.Domain.Entities.AccountBank", b =>
                 {
-                    b.Navigation("Transactions");
+                    b.Navigation("TransactionsPayee");
+
+                    b.Navigation("TransactionsPayer");
                 });
 #pragma warning restore 612, 618
         }

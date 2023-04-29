@@ -18,7 +18,6 @@ public class AuthController : ApiControllerBase
     
     [HttpPost]
     [Route("authenticated")]
-    [Authorize]
     public async Task<ActionResult<Result>> AuthenticatedCommand(AuthenticatedAuthCommand command)
     {
         return await Mediator.Send(command);

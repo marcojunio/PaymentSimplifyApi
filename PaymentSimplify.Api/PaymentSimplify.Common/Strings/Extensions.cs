@@ -18,4 +18,9 @@ public static class Extensions
 
         return countRepeat == value.Length;
     }
+
+    public static Guid ToGuid(this string value)
+    {
+        return new Guid(value);
+    }
 }
